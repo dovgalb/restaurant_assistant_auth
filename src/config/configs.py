@@ -31,11 +31,11 @@ class Settings(BaseSettings):
     secret: str = "secret"
 
     # DB
-    host: str = "127.0.0.1"
-    port: str = "5432"
-    user: str = "user"
-    password: str = "pass"
-    db: str = "name"
+    postgres_host: str = "127.0.0.1"
+    postgres_port: str = "5432"
+    postgres_user: str = "user"
+    postgres_password: str = "pass"
+    postgres_db: str = "name"
     db_future: bool = True
     db_pool_recycle: int = 30 * 60
     db_echo: bool = True
@@ -56,11 +56,11 @@ class Settings(BaseSettings):
         return {
             "url": PostgresDsn.build(
                 scheme="postgresql+asyncpg",
-                user=values["user"],
-                password=values["password"],
-                host=values["host"],
-                port=values["port"],
-                path=f"/{values['db']}",
+                user=values["postgres_user"],
+                password=values["postgres_password"],
+                host=values["postgres_host"],
+                port=values["postgres_port"],
+                path=f"/{values['postgres_db']}",
             ),
             "future": values["db_future"],
             "pool_recycle": values["db_pool_recycle"],
