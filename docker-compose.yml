@@ -3,11 +3,13 @@ version: '3.7'
 services:
 
   api:
+    container_name: auth_app
     build:
       context: .
       network: host
     ports:
         - "9999:8000"
+    restart: always
     command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     environment:
       - POSTGRES_HOST=restaurant_assistant
@@ -17,8 +19,8 @@ services:
     depends_on:
      - postgres
 
-
   postgres:
+    container_name: ra_db_auth
     hostname: restaurant_assistant
     image: postgres:13.0-alpine
     volumes:
@@ -28,5 +30,38 @@ services:
     env_file:
       - src/config/.env
 
+  redis:
+    container_name: redis
+    image: redis
+
+  celery_worker:
+    container_name: celery_worker
+    build: .
+    command: celery -A celery_worker.celery worker --loglevel=info
+    volumes:
+      - .:/app
+#    environment:
+#      - CELERY_BROKER_URL="redis://redis:6379/0"
+#      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+    env_file:
+      - src/config/.env
+    depends_on:
+      - api
+      - redis
+
+  flower:
+    container_name: flower
+    build: .
+    command: celery -A celery_worker.celery flower --port=5555
+    ports:
+      - "5556:5555"
+    env_file:
+      - src/config/.env
+    depends_on:
+      - api
+      - redis
+      - celery_worker
+
 volumes:
   postgres_data:
+

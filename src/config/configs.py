@@ -45,6 +45,11 @@ class Settings(BaseSettings):
     directory_host: str = "127.0.0.1"
     directory_port: str = "80"
 
+    # REDIS
+
+    celery_broker_url: str = "redis://redis:6379/0"
+    celery_result_backend: str = "redis://redis:6379/0"
+
     @validator("database", pre=True)
     def pass_database_settings(
             cls, value: Optional[str], values: dict[str, Any]
