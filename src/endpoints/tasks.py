@@ -6,10 +6,13 @@ tasks_router = APIRouter()
 
 
 @tasks_router.post(path="/sample")
-def run_task(data=Body(...)):
-    amount = int(data['amount'])
-    x = data['x']
-    y = data['y']
+def run_task(amount: int, x: int, y: int):
+    """
+    представление для симуляции длительной задачи
+    """
+    amount = amount
+    x = x
+    y = y
     task = create_task.delay(amount, x, y)
     return JSONResponse({'Calculation': task.get()})
 
@@ -17,3 +20,4 @@ def run_task(data=Body(...)):
 @tasks_router.get("/test-get")
 async def get_data():
     return JSONResponse({"data": "helloo world"})
+

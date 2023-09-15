@@ -40,9 +40,6 @@ services:
     command: celery -A celery_worker.celery worker --loglevel=info
     volumes:
       - .:/app
-#    environment:
-#      - CELERY_BROKER_URL="redis://redis:6379/0"
-#      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
     env_file:
       - src/config/.env
     depends_on:
