@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   api:
-    container_name: auth_app
+    container_name: auth_api
     build:
       context: .
       network: host
@@ -20,7 +20,7 @@ services:
      - postgres
 
   postgres:
-    container_name: ra_db_auth
+    container_name: auth_ra_db
     hostname: restaurant_assistant
     image: postgres:13.0-alpine
     volumes:
@@ -31,11 +31,11 @@ services:
       - src/config/.env
 
   redis:
-    container_name: redis
+    container_name: auth_redis
     image: redis
 
   celery_worker:
-    container_name: celery_worker
+    container_name: auth_celery_worker
     build: .
     command: celery -A celery_worker.celery worker --loglevel=info
     volumes:
@@ -47,7 +47,7 @@ services:
       - redis
 
   flower:
-    container_name: flower
+    container_name: auth_flower
     build: .
     command: celery -A celery_worker.celery flower --port=5555
     ports:
